@@ -48,16 +48,16 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     // xbox controller A button shoots
-    if (xbox2.getAButton())
+    if (xbox1.getAButton())
     {
        shooterLeft.set(-1);    
-       shooterRight.set(-1);
+       shooterRight.set(1);
     }
     // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
-    else if (xbox2.getBButton())
+    else if (xbox1.getBButton())
     {
       shooterLeft.set(0.2);  
-      shooterRight.set(0.2);
+      shooterRight.set(-0.2);
     }
     // Else the shooter motors stop
     else
