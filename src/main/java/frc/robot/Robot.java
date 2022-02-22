@@ -7,12 +7,26 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
  * the code necessary to operate a robot with tank drive.
  */
 public class Robot extends TimedRobot {
+
+  Command m_autonomousCommand;
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  
+  Timer timer;
+
+  MecanumDrive robotDrive;
 
   PWMVictorSPX frontLeft, frontRight, backLeft, backRight;
 
@@ -42,10 +56,15 @@ public class Robot extends TimedRobot {
         
     //Define the intake
     intake = new PWMVictorSPX(Constants.intakeMotor);
+    //Tells the robot that we are using a mechanum system
+    robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
   }
 
   @Override
   public void teleopPeriodic() {
+
+    robotDrive.setSafetyEnabled(false);
+    robotDrive.driveCartesian(1*xbox2.getRawAxis(0), -1*xbox2.getRawAxis(1), 1*xbox2.getRawAxis(4));
 
     // xbox controller A button shoots
     if (xbox1.getAButton())
@@ -66,4 +85,56 @@ public class Robot extends TimedRobot {
       shooterRight.stopMotor();
     }
   }
+
+  @Override
+  public void autonomousInit() {
+    m_autonomousCommand = m_chooser.getSelected();
+
+    robotDrive.setSafetyEnabled(false);
+    timer = new Timer();
+    timer.reset();
+    timer.start();
+
+    final int ARR_SIZE = 3;
+
+    double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
+
+    for(int i = 0; i < ARR_SIZE; i++){
+
+      double cT = timer.get();
+      System.out.println(cT);
+
+      while(timer.get() < cT + (moveArr[i][0])){
+        robotDrive.driveCartesian(moveArr[i][1], moveArr[i][2], moveArr[i][3]);
+      }
+
+    }
+
+
+
+
+    /*
+    robotDrive.driveCartesian(0, -0.25, 0);
+    Timer.delay(1);
+    robotDrive.driveCartesian(0, 0, 0);
+    /*
+    /*
+     * String autoSelected = SmartDashboard.getString("Auto Selector",
+     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
+     * = new MyAutoCommand(); break; case "Default Auto": default:
+     * autonomousCommand = new ExampleCommand(); break; }
+     */
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
+
+
+
+
+
+
+
 }
