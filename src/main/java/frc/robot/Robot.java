@@ -64,7 +64,10 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
+    double speedCap = 1;
+    double spinCap = .69;
     robotDrive.driveCartesian(1*xbox2.getRawAxis(0), -1*xbox2.getRawAxis(1), 1*xbox2.getRawAxis(4));
+
 
     // xbox controller A button shoots
     if (xbox1.getAButton())
