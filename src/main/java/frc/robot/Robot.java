@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
-
-
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
  * the code necessary to operate a robot with tank drive.
