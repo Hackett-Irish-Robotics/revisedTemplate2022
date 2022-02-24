@@ -106,7 +106,8 @@ public class Robot extends TimedRobot {
       System.out.println(cT);
 
       while(timer.get() < cT + (moveArr[i][0])){
-        robotDrive.driveCartesian(moveArr[i][1], moveArr[i][2], moveArr[i][3]);
+        //driveCartesian parameters are (ySpeed, xSpeed, zRotationSpeed)
+        robotDrive.driveCartesian(moveArr[i][1], moveArr[i][2], moveArr[i][3], 0.0);
       }
 
     }

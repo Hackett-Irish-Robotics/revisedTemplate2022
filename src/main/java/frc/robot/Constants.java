@@ -16,6 +16,6 @@ public class Constants {
     public static final int intakeMotor = 7;
     
     //Tells the program that there are two different controllers connected
-    public static final int xboxController1 = 1;
-    public static final int xboxController2 = 2;
+    public static final int xboxController1 = 0;
+    public static final int xboxController2 = 1;
 }
