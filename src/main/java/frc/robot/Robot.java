@@ -114,8 +114,9 @@ public class Robot extends TimedRobot {
 
     //moving out of the start area
     if(timer.get() < timeInterval[0]) {
-      robotDrive.driveCartesian(0, 0.5, 0);
+      robotDrive.driveCartesian(0.5, 0, 0);
     } else if (timer.get() < timeInterval[0] + timeInterval[1]) {
+      //test reverse for braking with driveCartesian
       robotDrive.stopMotor();
     } else {
       robotDrive.stopMotor();
