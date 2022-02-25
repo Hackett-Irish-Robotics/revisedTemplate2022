@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
     frontRight = new PWMVictorSPX(Constants.rightFrontMotor);
     backLeft = new PWMVictorSPX(Constants.leftBackMotor);
     backRight = new PWMVictorSPX(Constants.rightBackMotor);
+    frontRight.setInverted(true);
+    backRight.setInverted(true);
     
     //Define the shooters to the robot as motors
     shooterLeft = new PWMVictorSPX(Constants.leftShooterMotor);
@@ -62,9 +64,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
-    double speedCap = 1;
+    double speedCap = .25;
     double spinCap = .69;
-    robotDrive.driveCartesian(1*xbox2.getRawAxis(0), -1*xbox2.getRawAxis(1), 1*xbox2.getRawAxis(4));
+    robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
 
     // xbox controller A button shoots
@@ -96,6 +98,15 @@ public class Robot extends TimedRobot {
     timer.reset();
     timer.start();
 
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+
     final int ARR_SIZE = 3;
 
     double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
@@ -112,9 +123,6 @@ public class Robot extends TimedRobot {
 
     }
 
-
-//hello
-
     /*
     robotDrive.driveCartesian(0, -0.25, 0);
     Timer.delay(1);
@@ -127,13 +135,7 @@ public class Robot extends TimedRobot {
      * autonomousCommand = new ExampleCommand(); break; }
      */
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
   }
-
-
 
 
 
