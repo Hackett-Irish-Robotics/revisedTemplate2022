@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_chooser.getSelected();
+    //m_autonomousCommand = m_chooser.getSelected();
 
     robotDrive.setSafetyEnabled(false);
     timer = new Timer();
@@ -99,18 +99,30 @@ public class Robot extends TimedRobot {
     timer.start();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
+    /*if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    }
+    }*/
   }
 
   @Override
   public void autonomousPeriodic() {
+    //final int ARR_SIZE = 3;
+    //double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
 
-    final int ARR_SIZE = 3;
+    //time intervals
+    double[] timeInterval = {1, 1, 1};
 
-    double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
+    //moving out of the start area
+    if(timer.get() < timeInterval[0]) {
+      robotDrive.driveCartesian(0, 0.5, 0);
+    } else if (timer.get() < timeInterval[0] + timeInterval[1]) {
+      robotDrive.stopMotor();
+    } else {
+      robotDrive.stopMotor();
+    }
 
+
+    /*
     for(int i = 0; i < ARR_SIZE; i++){
 
       double cT = timer.get();
@@ -121,7 +133,7 @@ public class Robot extends TimedRobot {
         robotDrive.driveCartesian(moveArr[i][1], moveArr[i][2], moveArr[i][3], 0.0);
       }
 
-    }
+    }*/
 
     /*
     robotDrive.driveCartesian(0, -0.25, 0);
