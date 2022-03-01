@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
         
     //Define the intake
     intake = new PWMVictorSPX(Constants.intakeMotor);
+
     //Tells the robot that we are using a mechanum system
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
   }
@@ -72,14 +73,14 @@ public class Robot extends TimedRobot {
     // xbox controller A button shoots
     if (xbox1.getAButton())
     {
-       shooterLeft.set(-1);    
-       shooterRight.set(1);
+       shooterLeft.set(-0.2);    
+       shooterRight.set(0.2);
     }
     // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
     else if (xbox1.getBButton())
     {
-      shooterLeft.set(0.2);  
-      shooterRight.set(-0.2);
+      shooterLeft.set(1);  
+      shooterRight.set(-1);
     }
     // Else the shooter motors stop
     else
@@ -87,6 +88,25 @@ public class Robot extends TimedRobot {
       shooterLeft.stopMotor();
       shooterRight.stopMotor();
     }
+
+    //Turns the intake on if X is pressed
+    if(xbox1.getXButton())
+    {
+      intake.set(-1);
+    }
+    //Turns the intake backwards if Y is pressed
+    else if(xbox1.getYButton())
+    {
+      intake.set(0.25);
+    }
+    //Stops the motor is nothin is bein pressed
+    else
+    {
+      intake.stopMotor();
+    }
+
+
+
   }
 
   @Override
@@ -98,6 +118,39 @@ public class Robot extends TimedRobot {
     timer.reset();
     timer.start();
 
+    //Declaring variabled and arrays
+    double[] xSpeed = {0.35, 0, 0.35};
+    double[] ySpeed = {0.35, 0, 0};
+    double[] zSpeed = {0.3, 0.3, 0};
+    double[] timeIntevals = {1, 2, 1};
+    double[] alecBaldwin = {0, 0, 0};
+    double autonTime;
+
+    //Main for loop
+    for(int i = 0; i < 3; i++){
+
+      //Sets the current time to autonTime
+      autonTime = timer.get();
+
+      //Runs in between the time intervals
+      while(timer.get() < autonTime + timeIntevals[i]){
+
+        //Drives the robot
+        robotDrive.driveCartesian(ySpeed[i], xSpeed[i], zSpeed[i]);
+      
+        //Runs the shooters if they need to be
+        shooterLeft.set(alecBaldwin[i]);
+        shooterRight.set(-alecBaldwin[i]);
+      }
+
+    }
+
+    robotDrive.driveCartesian(0, 0, 0);
+
+    //Stops the motors
+    shooterLeft.stopMotor();
+    shooterRight.stopMotor();
+
     // schedule the autonomous command (example)
     /*if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -106,19 +159,61 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+
+    /*//Declaring variabled and arrays
+    double[] xSpeed = {0.35, 0, 0.35};
+    double[] ySpeed = {0.35, 0, 0};
+    double[] zSpeed = {0.3, 0.3, 0};
+    double[] timeIntevals = {1, 2, 1};
+    double[] alecBaldwin = {0, 0, 0};
+    double autonTime;
+
+    //Main for loop
+    for(int i = 0; i < 3; i++){
+
+      //Sets the current time to autonTime
+      autonTime = timer.get();
+
+      //Runs in between the time intervals
+      while(timer.get() < autonTime + timeIntevals[i]){
+
+        //Drives the robot
+        robotDrive.driveCartesian(ySpeed[i], xSpeed[i], zSpeed[i]);
+      
+        //Runs the shooters if they need to be
+        shooterLeft.set(alecBaldwin[i]);
+        shooterRight.set(-alecBaldwin[i]);
+      }
+
+      //Stops the motors
+      shooterLeft.stopMotor();
+      shooterRight.stopMotor();
+
+    }*/
+
+    /*
     //final int ARR_SIZE = 3;
     //double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
 
     //time intervals
-    double[] timeInterval = {1, 1, 1};
+    double[] timeInterval = {1, 3, 1};
+    double autonTime = 0;
 
     //moving out of the start area
     if(timer.get() < timeInterval[0]) {
+
+      //Moves the actual robot
       robotDrive.driveCartesian(0.5, 0, 0);
-    } else if (timer.get() < timeInterval[0] + timeInterval[1]) {
-      //test reverse for braking with driveCartesian
-      robotDrive.stopMotor();
-    } else {
+
+      //Sets the autonTime varieable to the time at which the last if statment ended
+      autonTime = timer.get();
+    } 
+    else if (timer.get() < autonTime + timeInterval[1]) {
+      robotDrive.driveCartesian(0, 0, 0.75);
+
+      autonTime = timer.get();
+    } 
+    else {
       robotDrive.stopMotor();
     }
 
