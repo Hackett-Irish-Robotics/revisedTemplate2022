@@ -151,13 +151,13 @@ public class Robot extends TimedRobot {
     timer.start();
 
     //Declaring variabled and arrays
-    double[] xSpeed = {0.35, 0, 0.35};
-    double[] ySpeed = {0.35, 0, 0};
-    double[] zSpeed = {0.3, 0.3, 0};
-    double[] timeIntevals = {1, 2, 1};
-    double[] alecBaldwin = {0, 0, 0};
+    double[] xSpeed = {0.5, -0.5, 0};
+    double[] ySpeed = {0, 0, 0};
+    double[] zSpeed = {0, 0, 0};
+    double[] timeIntevals = {3, 0.2, 3};
+    double[] alecBaldwin = {0, 0, 1};
     double autonTime;
-
+ 
     //Main for loop
     for(int i = 0; i < 3; i++){
 
@@ -174,14 +174,12 @@ public class Robot extends TimedRobot {
         shooterLeft.set(alecBaldwin[i]);
         shooterRight.set(-alecBaldwin[i]);
       }
-
+      //Stops the motors
+      shooterLeft.stopMotor();
+      shooterRight.stopMotor();
     }
 
     robotDrive.driveCartesian(0, 0, 0);
-
-    //Stops the motors
-    shooterLeft.stopMotor();
-    shooterRight.stopMotor();
 
     // schedule the autonomous command (example)
     /*if (m_autonomousCommand != null) {
