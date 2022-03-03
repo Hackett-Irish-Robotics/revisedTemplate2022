@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.management.BadBinaryOpValueExpException;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
@@ -89,7 +91,7 @@ public class Robot extends TimedRobot {
       shooterRight.stopMotor();
     }
 
-    //Turns the intake on if X is pressed
+    /*Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
       intake.set(-1);
@@ -99,13 +101,43 @@ public class Robot extends TimedRobot {
     {
       intake.set(0.25);
     }
+
     //Stops the motor is nothin is bein pressed
     else
     {
       intake.stopMotor();
     }
+    */
 
+    //Turns the intake on if X is pressed
+    if(xbox1.getXButton())
+    {
+      double intakeTime = timer.get();
 
+      while(timer.get() < intakeTime + 3){
+        intake.set(-1);
+      }
+    }
+    //Turns the intake backwards if Y is pressed
+    else if(xbox1.getYButton())
+    {
+      double intakeTime = timer.get();
+
+      while(timer.get() < intakeTime + 0.25){
+        intake.set(1);
+      }
+      
+      intakeTime = timer.get();
+
+      while(timer.get() < intakeTime + 2){
+        intake.set(-0.5);
+      }
+    }
+    //Stops the motor is nothin is bein pressed
+    else
+    {
+      intake.stopMotor();
+    }
 
   }
 
@@ -159,78 +191,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-
-    /*//Declaring variabled and arrays
-    double[] xSpeed = {0.35, 0, 0.35};
-    double[] ySpeed = {0.35, 0, 0};
-    double[] zSpeed = {0.3, 0.3, 0};
-    double[] timeIntevals = {1, 2, 1};
-    double[] alecBaldwin = {0, 0, 0};
-    double autonTime;
-
-    //Main for loop
-    for(int i = 0; i < 3; i++){
-
-      //Sets the current time to autonTime
-      autonTime = timer.get();
-
-      //Runs in between the time intervals
-      while(timer.get() < autonTime + timeIntevals[i]){
-
-        //Drives the robot
-        robotDrive.driveCartesian(ySpeed[i], xSpeed[i], zSpeed[i]);
-      
-        //Runs the shooters if they need to be
-        shooterLeft.set(alecBaldwin[i]);
-        shooterRight.set(-alecBaldwin[i]);
-      }
-
-      //Stops the motors
-      shooterLeft.stopMotor();
-      shooterRight.stopMotor();
-
-    }*/
-
-    /*
-    //final int ARR_SIZE = 3;
-    //double[][] moveArr = {{1, 1, 5}, {0.2, 0, 0}, {0, 0.2, 0}, {0, 0, 1}, {0, 0, 0}};
-
-    //time intervals
-    double[] timeInterval = {1, 3, 1};
-    double autonTime = 0;
-
-    //moving out of the start area
-    if(timer.get() < timeInterval[0]) {
-
-      //Moves the actual robot
-      robotDrive.driveCartesian(0.5, 0, 0);
-
-      //Sets the autonTime varieable to the time at which the last if statment ended
-      autonTime = timer.get();
-    } 
-    else if (timer.get() < autonTime + timeInterval[1]) {
-      robotDrive.driveCartesian(0, 0, 0.75);
-
-      autonTime = timer.get();
-    } 
-    else {
-      robotDrive.stopMotor();
-    }
-
-
-    /*
-    for(int i = 0; i < ARR_SIZE; i++){
-
-      double cT = timer.get();
-      System.out.println(cT);
-
-      while(timer.get() < cT + (moveArr[i][0])){
-        //driveCartesian parameters are (ySpeed, xSpeed, zRotationSpeed)
-        robotDrive.driveCartesian(moveArr[i][1], moveArr[i][2], moveArr[i][3], 0.0);
-      }
-
-    }*/
-
     /*
     robotDrive.driveCartesian(0, -0.25, 0);
     Timer.delay(1);
@@ -244,9 +204,5 @@ public class Robot extends TimedRobot {
      */
 
   }
-
-
-
-
 
 }
