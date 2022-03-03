@@ -151,15 +151,15 @@ public class Robot extends TimedRobot {
     timer.start();
 
     //Declaring variabled and arrays
-    double[] xSpeed = {0.5, -0.5, 0};
-    double[] ySpeed = {0, 0, 0};
-    double[] zSpeed = {0, 0, 0};
-    double[] timeIntevals = {3, 0.2, 3};
-    double[] alecBaldwin = {0, 0, 1};
+    double[] xSpeed = {-0.5, 0.5, 0, 0};
+    double[] ySpeed = {0, 0, 0, 0};
+    double[] zSpeed = {0, 0, 0.1, 0};
+    double[] timeIntevals = {1.5, 0.3, 0.5, 3};
+    double[] alecBaldwin = {0, 0, 0, 1};
     double autonTime;
  
     //Main for loop
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
 
       //Sets the current time to autonTime
       autonTime = timer.get();
@@ -168,7 +168,7 @@ public class Robot extends TimedRobot {
       while(timer.get() < autonTime + timeIntevals[i]){
 
         //Drives the robot
-        robotDrive.driveCartesian(ySpeed[i], xSpeed[i], zSpeed[i]);
+        robotDrive.driveCartesian(xSpeed[i], ySpeed[i], zSpeed[i]);
       
         //Runs the shooters if they need to be
         shooterLeft.set(alecBaldwin[i]);
