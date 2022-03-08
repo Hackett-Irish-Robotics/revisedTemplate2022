@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
 
     robotDrive.setSafetyEnabled(false);
     double speedCap = .25;
-    double spinCap = .69;
+    double spinCap = .75;
     robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
 
@@ -91,15 +91,15 @@ public class Robot extends TimedRobot {
       shooterRight.stopMotor();
     }
 
-    /*Turns the intake on if X is pressed
+    //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intake.set(-1);
+      intake.set(1);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton())
     {
-      intake.set(0.25);
+      intake.set(-0.25);
     }
 
     //Stops the motor is nothin is bein pressed
@@ -107,8 +107,9 @@ public class Robot extends TimedRobot {
     {
       intake.stopMotor();
     }
-    */
+    
 
+    /*
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
@@ -138,7 +139,7 @@ public class Robot extends TimedRobot {
     {
       intake.stopMotor();
     }
-
+    */
   }
 
   @Override
