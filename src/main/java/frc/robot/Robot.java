@@ -6,6 +6,8 @@ package frc.robot;
 
 import javax.management.BadBinaryOpValueExpException;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,6 +16,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -37,7 +44,7 @@ public class Robot extends TimedRobot {
   PWMVictorSPX shooterRight;
 
   PWMVictorSPX intake1;
-  PWMVictorSPX intake2;
+  CANSparkMax intake2;
 
   @Override
   public void robotInit() {
@@ -59,7 +66,7 @@ public class Robot extends TimedRobot {
         
     //Define the intake
     intake1 = new PWMVictorSPX(Constants.intakeMotor1);
-    intake2 = new PWMVictorSPX(Constants.intakeMotor2);
+    intake2 = new CANSparkMax(Constants.intakeMotor2, MotorType.kBrushed);
 
     //Tells the robot that we are using a mechanum system
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
@@ -70,7 +77,7 @@ public class Robot extends TimedRobot {
 
     robotDrive.setSafetyEnabled(false);
     double speedCap = .25;
-    double spinCap = .69;
+    double spinCap = .75;
     robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
 
@@ -97,13 +104,13 @@ public class Robot extends TimedRobot {
     if(xbox1.getXButton())
     {
       intake1.set(1);
-      intake2.set(1);
+      intake2.set(-1);
     }
     //Turns the intake backwards if Y is pressed
-    else if(xbox1.getYButton())
+    else if(xbox1.getYButton()) 
     {
       intake1.set(-0.25);
-      intake2.set(-0.25); 
+      intake2.set(0.25); 
     }
 
     //Stops the motor is nothin is bein pressed
