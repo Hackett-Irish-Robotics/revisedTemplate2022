@@ -13,8 +13,9 @@ public class Constants {
     public static final int rightShooterMotor = 6;
     
     //Tells the program that there is a motor connected to this victor (the ports on the RoboRio)
-    public static final int intakeMotor = 7;
-    
+    public static final int intakeMotor1 = 7;
+    public static final int intakeMotor2 = 8;
+
     //Tells the program that there are two different controllers connected
     public static final int xboxController1 = 0;
     public static final int xboxController2 = 1;

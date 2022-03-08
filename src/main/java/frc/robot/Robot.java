@@ -36,7 +36,8 @@ public class Robot extends TimedRobot {
   PWMVictorSPX shooterLeft;
   PWMVictorSPX shooterRight;
 
-  PWMVictorSPX intake;
+  PWMVictorSPX intake1;
+  PWMVictorSPX intake2;
 
   @Override
   public void robotInit() {
@@ -57,7 +58,8 @@ public class Robot extends TimedRobot {
     shooterRight = new PWMVictorSPX(Constants.rightShooterMotor);
         
     //Define the intake
-    intake = new PWMVictorSPX(Constants.intakeMotor);
+    intake1 = new PWMVictorSPX(Constants.intakeMotor1);
+    intake2 = new PWMVictorSPX(Constants.intakeMotor2);
 
     //Tells the robot that we are using a mechanum system
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
@@ -91,24 +93,27 @@ public class Robot extends TimedRobot {
       shooterRight.stopMotor();
     }
 
-    /*Turns the intake on if X is pressed
+    //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intake.set(-1);
+      intake1.set(1);
+      intake2.set(1);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton())
     {
-      intake.set(0.25);
+      intake1.set(-0.25);
+      intake2.set(-0.25); 
     }
 
     //Stops the motor is nothin is bein pressed
     else
     {
-      intake.stopMotor();
+      intake1.stopMotor();
+      intake2.stopMotor();
     }
-    */
-
+    
+    /*
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
@@ -137,7 +142,7 @@ public class Robot extends TimedRobot {
     else
     {
       intake.stopMotor();
-    }
+    }*/
 
   }
 
