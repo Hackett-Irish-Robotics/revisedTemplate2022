@@ -44,7 +44,8 @@ public class Robot extends TimedRobot {
   PWMVictorSPX shooterRight;
 
   PWMVictorSPX intake1;
-  CANSparkMax intake2;
+  PWMVictorSPX intake2;
+  //CANSparkMax intake2;
 
   @Override
   public void robotInit() {
@@ -66,7 +67,7 @@ public class Robot extends TimedRobot {
         
     //Define the intake
     intake1 = new PWMVictorSPX(Constants.intakeMotor1);
-    intake2 = new CANSparkMax(Constants.intakeMotor2, MotorType.kBrushed);
+    intake2 = new PWMVictorSPX(Constants.intakeMotor2);
 
     //Tells the robot that we are using a mechanum system
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
@@ -84,7 +85,7 @@ public class Robot extends TimedRobot {
     // xbox controller A button shoots
     if (xbox1.getAButton())
     {
-       shooterLeft.set(-0.2);    
+       shooterLeft.set(-1.0);    
        shooterRight.set(0.2);
     }
     // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
@@ -103,14 +104,14 @@ public class Robot extends TimedRobot {
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intake1.set(1);
-      intake2.set(-1);
+      intake1.set(-1.0);
+      intake2.set(-1.0);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton()) 
     {
-      intake1.set(-0.25);
-      intake2.set(0.25); 
+      intake1.set(1.0);
+      intake2.set(1.0); 
     }
 
     //Stops the motor is nothin is bein pressed
