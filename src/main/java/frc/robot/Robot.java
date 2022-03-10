@@ -47,6 +47,9 @@ public class Robot extends TimedRobot {
   PWMVictorSPX intake2;
   //CANSparkMax intake2;
 
+  //orientation
+  boolean orientation = true;
+
   @Override
   public void robotInit() {
     //Define the different controllers as seperate and distinct inputs
@@ -79,8 +82,28 @@ public class Robot extends TimedRobot {
     robotDrive.setSafetyEnabled(false);
     double speedCap = .25;
     double spinCap = .75;
-    robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
+    //robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
+    if(orientation)
+    {
+      robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
+    }
+    else
+    {
+      robotDrive.driveCartesian(speedCap*xbox2.getRawAxis(1), -speedCap*xbox2.getRawAxis(0), -speedCap*xbox2.getRawAxis(4));
+    }
+
+    // xbox controller A (driver controller) reverses orientation
+    if (xbox2.getAButton())
+    {
+       orientation = false;
+    }
+
+    // xbox controller B (driver controller) sets orientation to normal
+    if (xbox2.getBButton())
+    {
+       orientation = true;
+    }
 
     // xbox controller A button shoots
     if (xbox1.getAButton())
