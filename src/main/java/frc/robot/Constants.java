@@ -19,4 +19,7 @@ public class Constants {
     //Tells the program that there are two different controllers connected
     public static final int xboxController1 = 0;
     public static final int xboxController2 = 1;
+
+    //camera
+    public static final int CameraServer = 0;
 }

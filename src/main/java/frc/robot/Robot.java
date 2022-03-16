@@ -5,9 +5,11 @@
 package frc.robot;
 
 import javax.management.BadBinaryOpValueExpException;
-
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
-
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,11 +18,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -43,12 +48,20 @@ public class Robot extends TimedRobot {
   PWMVictorSPX shooterLeft;
   PWMVictorSPX shooterRight;
 
-  PWMVictorSPX intake1;
-  PWMVictorSPX intake2;
+  public WPI_TalonSRX intakeDeploy;
+  private double intakeDeployPos = 0;
+  private final double INTAKE_DOWN = 2269;
+  private final double INTAKE_UP = 0; 
+
   //CANSparkMax intake2;
 
   //orientation
   boolean orientation = true;
+
+  //pneumatics
+  //DoubleSolenoid m_doubleSolenoid;
+  Solenoid pneumatic_climber;
+
 
   @Override
   public void robotInit() {
@@ -69,28 +82,54 @@ public class Robot extends TimedRobot {
     shooterRight = new PWMVictorSPX(Constants.rightShooterMotor);
         
     //Define the intake
-    intake1 = new PWMVictorSPX(Constants.intakeMotor1);
-    intake2 = new PWMVictorSPX(Constants.intakeMotor2);
+    intakeDeploy = new WPI_TalonSRX(Constants.intakeMotor2);
+    intakeDeploy.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    //intakeDeploy.setSelectedSensorPosition(0);
 
     //Tells the robot that we are using a mechanum system
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
+
+    // Need to see with the camera.
+    // Discussions online note that there is no way
+    // to rotate it in Java. Might be able to
+    // change orientation in the driver station.
+    // Must be rotated at driver station.
+    CameraServer.startAutomaticCapture();
+
+   //pneumatics attempt number one
+   // DoubleSolenoid corresponds to a double solenoid.
+    //m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    pneumatic_climber = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   }
 
   @Override
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
-    double speedCap = .25;
-    double spinCap = .75;
+    double speedCap = .75;
+    double spinCap = .5;
     //robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
     if(orientation)
     {
-      robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
+      robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), spinCap*xbox2.getRawAxis(4));
     }
     else
     {
-      robotDrive.driveCartesian(speedCap*xbox2.getRawAxis(1), -speedCap*xbox2.getRawAxis(0), -speedCap*xbox2.getRawAxis(4));
+      robotDrive.driveCartesian(speedCap*xbox2.getRawAxis(1), -speedCap*xbox2.getRawAxis(0), spinCap*xbox2.getRawAxis(4));
+    }
+
+
+    //pneumatics button (driver controller) if X is pressed the pneumatics should activate
+   if (xbox1.getXButton())
+    {
+      pneumatic_climber.set(true);
+        //m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+    //else 
+    {
+      pneumatic_climber.set(false);
+      //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     // xbox controller A (driver controller) reverses orientation
@@ -108,14 +147,14 @@ public class Robot extends TimedRobot {
     // xbox controller A button shoots
     if (xbox1.getAButton())
     {
-       shooterLeft.set(-1.0);    
-       shooterRight.set(0.2);
+       shooterLeft.set(1.0);    
+       shooterRight.set(-1.0);
     }
     // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
     else if (xbox1.getBButton())
     {
-      shooterLeft.set(1);  
-      shooterRight.set(-1);
+      shooterLeft.set(-1);  
+      shooterRight.set(1);
     }
     // Else the shooter motors stop
     else
@@ -127,23 +166,31 @@ public class Robot extends TimedRobot {
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intake1.set(-1.0);
-      intake2.set(-1.0);
+      intakeDeploy.set(-1.0);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton()) 
     {
-      intake1.set(1.0);
-      intake2.set(1.0); 
+      intakeDeploy.set(1.0); 
     }
 
     //Stops the motor is nothin is bein pressed
     else
     {
-      intake1.stopMotor();
-      intake2.stopMotor();
+      intakeDeploy.set(0); 
     }
     
+    SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
+
+   /* 
+        if(xbox1.getXButton()){
+          intakeDeployPos = INTAKE_DOWN;
+        }
+        else if (xbox1.getYButton()){
+          intakeDeployPos = INTAKE_UP;
+        }
+        intakeDeploy.set((Math.abs(intakeDeployPos - intakeDeploy.getSelectedSensorPosition()) > 300)? (intakeDeployPos - intakeDeploy.getSelectedSensorPosition()):0);
+    */
     /*
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
@@ -187,28 +234,46 @@ public class Robot extends TimedRobot {
     timer.start();
 
     //Declaring variabled and arrays
-    double[] xSpeed = {-0.5, 0.5, 0, 0};
+    double[] xSpeed = {0.4, 0, 0, 0};
     double[] ySpeed = {0, 0, 0, 0};
     double[] zSpeed = {0, 0, 0.1, 0};
-    double[] timeIntevals = {1.5, 0.3, 0.5, 3};
-    double[] alecBaldwin = {0, 0, 0, 1};
+    double[] timeIntevals = {4, 0, 0, 0};
+    //double[] alecBaldwin = {0, 0, 0, 0};
     double autonTime;
  
     //Main for loop
     for(int i = 0; i < 4; i++){
-
+      
       //Sets the current time to autonTime
       autonTime = timer.get();
+      
+      /*if(alecBaldwin[i] == 1){
+        
+        shooterLeft.set(1);
+        shooterRight.set(-1);
+        /*
+        while(timer.get() < autonTime + 0.5){
+          intake1.set(1.0);
+          intake2.set(1.0);
+        }
+
+        while(timer.get() < autonTime + 3){
+          intake1.set(-1.0);
+          intake2.set(-1.0);
+        }
+
+        shooterLeft.stopMotor();
+
+
+        shooterRight.stopMotor();
+      }*/
 
       //Runs in between the time intervals
       while(timer.get() < autonTime + timeIntevals[i]){
 
         //Drives the robot
         robotDrive.driveCartesian(xSpeed[i], ySpeed[i], zSpeed[i]);
-      
-        //Runs the shooters if they need to be
-        shooterLeft.set(alecBaldwin[i]);
-        shooterRight.set(-alecBaldwin[i]);
+  
       }
       //Stops the motors
       shooterLeft.stopMotor();
