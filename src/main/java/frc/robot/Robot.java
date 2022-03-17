@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
   //pneumatics
   //DoubleSolenoid m_doubleSolenoid;
-  Solenoid pneumatic_climber;
+  Solenoid pneumaticClimber;
 
 
   @Override
@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
    //pneumatics attempt number one
    // DoubleSolenoid corresponds to a double solenoid.
     //m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    pneumatic_climber = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    pneumaticClimber = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pneumaticChannel);
   }
 
   @Override
@@ -117,19 +117,6 @@ public class Robot extends TimedRobot {
     else
     {
       robotDrive.driveCartesian(speedCap*xbox2.getRawAxis(1), -speedCap*xbox2.getRawAxis(0), spinCap*xbox2.getRawAxis(4));
-    }
-
-
-    //pneumatics button (driver controller) if X is pressed the pneumatics should activate
-   if (xbox1.getXButton())
-    {
-      pneumatic_climber.set(true);
-        //m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-    //else 
-    {
-      pneumatic_climber.set(false);
-      //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     // xbox controller A (driver controller) reverses orientation
@@ -180,6 +167,18 @@ public class Robot extends TimedRobot {
       intakeDeploy.set(0); 
     }
     
+    //pneumatics button (same controller as intake and shooter) if left bumper is pressed the pneumatics should activate
+    if (xbox1.getLeftBumper())
+    {
+      pneumaticClimber.set(true);
+       //m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+    else 
+    {
+     pneumaticClimber.set(false);
+     //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+   }
+
     SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
 
    /* 
