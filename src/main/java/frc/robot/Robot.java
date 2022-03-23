@@ -50,10 +50,13 @@ public class Robot extends TimedRobot {
 
   PWMVictorSPX intakeMotor;
 
+
+  /* 
   public WPI_TalonSRX intakeDeploy;
   private double intakeDeployPos = 0;
   private final double INTAKE_DOWN = 2269;
   private final double INTAKE_UP = 0; 
+  */
 
   //CANSparkMax intake2;
 
@@ -62,7 +65,7 @@ public class Robot extends TimedRobot {
 
   //pneumatics
   //DoubleSolenoid m_doubleSolenoid;
-  Solenoid pneumaticClimber;
+  //Solenoid pneumaticClimber;
 
 
   @Override
@@ -102,7 +105,7 @@ public class Robot extends TimedRobot {
    //pneumatics attempt number one
    // DoubleSolenoid corresponds to a double solenoid.
     //m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    pneumaticClimber = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pneumaticChannel);
+    //pneumaticClimber = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pneumaticChannel);
   }
 
   @Override
@@ -122,25 +125,25 @@ public class Robot extends TimedRobot {
       robotDrive.driveCartesian(speedCap*xbox2.getRawAxis(1), -speedCap*xbox2.getRawAxis(0), spinCap*xbox2.getRawAxis(4));
     }
 
-    // xbox controller A (driver controller) reverses orientation
+    // xbox controller 2 button A (driver controller) reverses orientation
     if (xbox2.getAButton())
     {
        orientation = false;
     }
 
-    // xbox controller B (driver controller) sets orientation to normal
+    // xbox controller 2 button B (driver controller) sets orientation to normal
     if (xbox2.getBButton())
     {
        orientation = true;
     }
 
-    // xbox controller A button shoots
+    // xbox controller 1 A button shoots
     if (xbox1.getAButton())
     {
        shooterLeft.set(1.0);    
        //shooterRight.set(-1.0);
     }
-    // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
+    // Xbox controller 1 B Button reverses shooter (in case ball gets stuck in intake)
     else if (xbox1.getBButton())
     {
       shooterLeft.set(-1);  
@@ -164,7 +167,7 @@ public class Robot extends TimedRobot {
       intakeMotor.set(1.0); 
     }
 
-    //Stops the motor is nothin is being pressed
+    //Stops the motor if nothin is being pressed
     else
     {
       intakeMotor.stopMotor();
