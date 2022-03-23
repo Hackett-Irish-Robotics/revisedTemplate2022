@@ -48,6 +48,8 @@ public class Robot extends TimedRobot {
   PWMVictorSPX shooterLeft;
   PWMVictorSPX shooterRight;
 
+  PWMVictorSPX intakeMotor;
+
   public WPI_TalonSRX intakeDeploy;
   private double intakeDeployPos = 0;
   private final double INTAKE_DOWN = 2269;
@@ -82,8 +84,9 @@ public class Robot extends TimedRobot {
     shooterRight = new PWMVictorSPX(Constants.rightShooterMotor);
         
     //Define the intake
-    intakeDeploy = new WPI_TalonSRX(Constants.intakeMotor2);
-    intakeDeploy.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    intakeMotor = new PWMVictorSPX(Constants.intakeMotor);
+    //intakeDeploy = new WPI_TalonSRX(Constants.intakeMotor);
+    //intakeDeploy.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
     //intakeDeploy.setSelectedSensorPosition(0);
 
     //Tells the robot that we are using a mechanum system
@@ -153,18 +156,18 @@ public class Robot extends TimedRobot {
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intakeDeploy.set(-1.0);
+      intakeMotor.set(-1.0);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton()) 
     {
-      intakeDeploy.set(1.0); 
+      intakeMotor.set(1.0); 
     }
 
-    //Stops the motor is nothin is bein pressed
+    //Stops the motor is nothin is being pressed
     else
     {
-      intakeDeploy.set(0); 
+      intakeMotor.stopMotor();
     }
     
     //pneumatics button (same controller as intake and shooter) if left bumper is pressed the pneumatics should activate
@@ -179,7 +182,7 @@ public class Robot extends TimedRobot {
      //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
    }
 
-    SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
 
    /* 
         if(xbox1.getXButton()){
