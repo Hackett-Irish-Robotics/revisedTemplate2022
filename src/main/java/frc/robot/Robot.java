@@ -138,13 +138,13 @@ public class Robot extends TimedRobot {
     if (xbox1.getAButton())
     {
        shooterLeft.set(1.0);    
-       shooterRight.set(-1.0);
+       //shooterRight.set(-1.0);
     }
     // Xbox controller B Button reverses shooter (in case ball gets stuck in intake)
     else if (xbox1.getBButton())
     {
       shooterLeft.set(-1);  
-      shooterRight.set(1);
+      //shooterRight.set(1);
     }
     // Else the shooter motors stop
     else
@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
       intakeMotor.stopMotor();
     }
     
-    //pneumatics button (same controller as intake and shooter) if left bumper is pressed the pneumatics should activate
+    /*pneumatics button (same controller as intake and shooter) if left bumper is pressed the pneumatics should activate
     if (xbox1.getLeftBumper())
     {
       pneumaticClimber.set(true);
@@ -181,7 +181,7 @@ public class Robot extends TimedRobot {
      pneumaticClimber.set(false);
      //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
    }
-
+ */
     //SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
 
    /* 
