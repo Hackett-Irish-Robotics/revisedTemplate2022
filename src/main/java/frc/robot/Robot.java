@@ -140,13 +140,13 @@ public class Robot extends TimedRobot {
     // xbox controller 1 A button shoots
     if (xbox1.getAButton())
     {
-       shooterLeft.set(1.0);    
+       shooterLeft.set(0.35);    
        //shooterRight.set(-1.0);
     }
     // Xbox controller 1 B Button reverses shooter (in case ball gets stuck in intake)
     else if (xbox1.getBButton())
     {
-      shooterLeft.set(-1);  
+      shooterLeft.set(-0.35);  
       //shooterRight.set(1);
     }
     // Else the shooter motors stop
@@ -159,12 +159,12 @@ public class Robot extends TimedRobot {
     //Turns the intake on if X is pressed
     if(xbox1.getXButton())
     {
-      intakeMotor.set(-1.0);
+      intakeMotor.set(-0.80);
     }
     //Turns the intake backwards if Y is pressed
     else if(xbox1.getYButton()) 
     {
-      intakeMotor.set(1.0); 
+      intakeMotor.set(0.80); 
     }
 
     //Stops the motor if nothin is being pressed
