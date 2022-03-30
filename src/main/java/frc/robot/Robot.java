@@ -2,14 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// this is the package that allows us to use the things from FIRST, it has to be the first thing in the program
 package frc.robot;
 
+
+// these are the imports which allow us to use certain commands and classes
 import javax.management.BadBinaryOpValueExpException;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
@@ -24,13 +25,9 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.cameraserver.CameraServer;
-//import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 
-/**
- * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
- * the code necessary to operate a robot with tank drive.
- */
+
+// this is where we define our controllers, motors, and other things
 public class Robot extends TimedRobot {
 
   Command m_autonomousCommand;
@@ -45,36 +42,26 @@ public class Robot extends TimedRobot {
   XboxController xbox1;
   XboxController xbox2;
   
-  PWMVictorSPX shooterLeft;
-  PWMVictorSPX shooterRight;
+  PWMVictorSPX shooter;
+  PWMVictorSPX belt;
 
   PWMVictorSPX intakeMotor;
 
-
-  /* 
-  public WPI_TalonSRX intakeDeploy;
-  private double intakeDeployPos = 0;
-  private final double INTAKE_DOWN = 2269;
-  private final double INTAKE_UP = 0; 
-  */
-
-  //CANSparkMax intake2;
+  PWMVictorSPX climberOne;
+  PWMVictorSPX climberTwo;
 
   //orientation
   boolean orientation = true;
 
-  //pneumatics
-  //DoubleSolenoid m_doubleSolenoid;
-  //Solenoid pneumaticClimber;
 
-
+  // this is the robotInit, which initializes things for us on the robot
   @Override
   public void robotInit() {
-    //Define the different controllers as seperate and distinct inputs
+    // Define the different controllers as seperate and distinct inputs
     xbox1 = new XboxController(Constants.xboxController1);
     xbox2 = new XboxController(Constants.xboxController2);
     
-    //Define the motors to the robot as a thing on the robot
+    // Define the motors to the robot as a thing on the robot
     frontLeft = new PWMVictorSPX(Constants.leftFrontMotor);
     frontRight = new PWMVictorSPX(Constants.rightFrontMotor);
     backLeft = new PWMVictorSPX(Constants.leftBackMotor);
@@ -82,40 +69,36 @@ public class Robot extends TimedRobot {
     frontRight.setInverted(true);
     backRight.setInverted(true);
     
-    //Define the shooters to the robot as motors
-    shooterLeft = new PWMVictorSPX(Constants.leftShooterMotor);
-    shooterRight = new PWMVictorSPX(Constants.rightShooterMotor);
-        
-    //Define the intake
-    intakeMotor = new PWMVictorSPX(Constants.intakeMotor);
-    //intakeDeploy = new WPI_TalonSRX(Constants.intakeMotor);
-    //intakeDeploy.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    //intakeDeploy.setSelectedSensorPosition(0);
+    // Defines the shooter to the robot as a motor
+    shooter = new PWMVictorSPX(Constants.ShooterMotor);
 
-    //Tells the robot that we are using a mechanum system
+    // Defines the belt to the robot as a motor
+    belt = new PWMVictorSPX(Constants.beltMotor);
+        
+    // Defines the intake motor to the robot as a motor
+    intakeMotor = new PWMVictorSPX(Constants.intakeMotor);
+
+    // Defines the climbing system to the robot as a motor
+    climberOne = new PWMVictorSPX(Constants.ClimberMotorOne);
+    climberTwo = new PWMVictorSPX(Constants.ClimberMotorTwo);
+
+    // Tells the robot that we are using a mechanum system for driving 
     robotDrive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
-    // Need to see with the camera.
-    // Discussions online note that there is no way
-    // to rotate it in Java. Might be able to
-    // change orientation in the driver station.
-    // Must be rotated at driver station.
+    // Code for the camera that you can attach to the robot, this should be all you need for the camera
     CameraServer.startAutomaticCapture();
 
-   //pneumatics attempt number one
-   // DoubleSolenoid corresponds to a double solenoid.
-    //m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    //pneumaticClimber = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pneumaticChannel);
   }
 
+  // this is the code for the teleop period where we are in control of the robot
   @Override
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
     double speedCap = .75;
     double spinCap = .5;
-    //robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), speedCap*xbox2.getRawAxis(4));
 
+    // this code is what allows the A and B buttons to switch the orientation of the robot (aka which way it thinks is its front) and allows it to drive
     if(orientation)
     {
       robotDrive.driveCartesian(-speedCap*xbox2.getRawAxis(1), speedCap*xbox2.getRawAxis(0), spinCap*xbox2.getRawAxis(4));
@@ -130,105 +113,79 @@ public class Robot extends TimedRobot {
     {
        orientation = false;
     }
-
     // xbox controller 2 button B (driver controller) sets orientation to normal
     if (xbox2.getBButton())
     {
        orientation = true;
     }
 
-    // xbox controller 1 A button shoots
-    if (xbox1.getAButton())
+    //xbox controller 2 (driver controller) turns the intake on if X is pressed
+    if(xbox2.getXButton())
     {
-       shooterLeft.set(0.35);    
-       //shooterRight.set(-1.0);
+      intakeMotor.set(-1.00);
     }
-    // Xbox controller 1 B Button reverses shooter (in case ball gets stuck in intake)
-    else if (xbox1.getBButton())
+    //xbox controller 2 (driver controller) turns the intake backwards if Y is pressed
+    else if(xbox2.getYButton()) 
     {
-      shooterLeft.set(-0.35);  
-      //shooterRight.set(1);
+      intakeMotor.set(1.00); 
     }
-    // Else the shooter motors stop
-    else
-    {
-      shooterLeft.stopMotor();
-      shooterRight.stopMotor();
-    }
-
-    //Turns the intake on if X is pressed
-    if(xbox1.getXButton())
-    {
-      intakeMotor.set(-0.80);
-    }
-    //Turns the intake backwards if Y is pressed
-    else if(xbox1.getYButton()) 
-    {
-      intakeMotor.set(0.80); 
-    }
-
-    //Stops the motor if nothin is being pressed
+    //Stops the motor if nothing is being pressed
     else
     {
       intakeMotor.stopMotor();
     }
-    
-    /*pneumatics button (same controller as intake and shooter) if left bumper is pressed the pneumatics should activate
-    if (xbox1.getLeftBumper())
+
+    // xbox controller 1 (other controller) B button shoots
+    if (xbox1.getBButton())
     {
-      pneumaticClimber.set(true);
-       //m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+       shooter.set(1.00);    
     }
+    // xbox controller 1 (other controller) A button reverses shooter
+    else if(xbox1.getAButton())
+    {
+      shooter.set(-1.00);
+    }
+    // stops the motor if nothing is being pressed
     else 
     {
-     pneumaticClimber.set(false);
-     //m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
-   }
- */
-    //SmartDashboard.putNumber("intakeDeployEncoder",intakeDeploy.getSelectedSensorPosition());
-
-   /* 
-        if(xbox1.getXButton()){
-          intakeDeployPos = INTAKE_DOWN;
-        }
-        else if (xbox1.getYButton()){
-          intakeDeployPos = INTAKE_UP;
-        }
-        intakeDeploy.set((Math.abs(intakeDeployPos - intakeDeploy.getSelectedSensorPosition()) > 300)? (intakeDeployPos - intakeDeploy.getSelectedSensorPosition()):0);
-    */
-    /*
-    //Turns the intake on if X is pressed
-    if(xbox1.getXButton())
-    {
-      double intakeTime = timer.get();
-
-      while(timer.get() < intakeTime + 3){
-        intake.set(-1);
-      }
+      shooter.stopMotor();
     }
-    //Turns the intake backwards if Y is pressed
+
+    // Xbox controller 1 (other controller) X button moves the belt down
+    if (xbox1.getXButton())
+    {
+      belt.set(-1.00);  
+    }
+    // xbox controller 1 (other controller) Y button moves the belt up
     else if(xbox1.getYButton())
     {
-      double intakeTime = timer.get();
-
-      while(timer.get() < intakeTime + 0.25){
-        intake.set(1);
-      }
-      
-      intakeTime = timer.get();
-
-      while(timer.get() < intakeTime + 2){
-        intake.set(-0.5);
-      }
+      belt.set(1.00);
     }
-    //Stops the motor is nothin is bein pressed
+    //stops the motor if nothing is being pressed
     else
     {
-      intake.stopMotor();
-    }*/
+      belt.stopMotor();
+    }
+    
+    //xbox controller 1 (other controller) deploys the climbers if the left bumper is pressed 
+    if(xbox1.getLeftBumper())
+    {
+      climberOne.set(1.00);
+      climberTwo.set(1.00);
+    }
+    else if(xbox1.getRightBumper())
+    {
+      climberOne.set(-1.00);
+      climberTwo.set(-1.00);
+    }
+    else
+    {
+      climberOne.stopMotor();
+      climberTwo.stopMotor();
+    }
 
   }
-
+  //This is our autonomous code, which is when the robot is not being driven by humans
   @Override
   public void autonomousInit() {
     //m_autonomousCommand = m_chooser.getSelected();
@@ -238,7 +195,7 @@ public class Robot extends TimedRobot {
     timer.reset();
     timer.start();
 
-    //Declaring variabled and arrays
+    //Declaring variables and arrays
     double[] xSpeed = {0.4, 0, 0, 0};
     double[] ySpeed = {0, 0, 0, 0};
     double[] zSpeed = {0, 0, 0.1, 0};
@@ -281,8 +238,11 @@ public class Robot extends TimedRobot {
   
       }
       //Stops the motors
-      shooterLeft.stopMotor();
-      shooterRight.stopMotor();
+      shooter.stopMotor();
+      belt.stopMotor();
+      intakeMotor.stopMotor();
+      climberOne.stopMotor();
+      climberTwo.stopMotor();
     }
 
     robotDrive.driveCartesian(0, 0, 0);
