@@ -173,11 +173,13 @@ public class Robot extends TimedRobot {
       climberOne.set(1.00);
       climberTwo.set(1.00);
     }
+    //this reverses the climbers so we can bring them back down
     else if(xbox1.getRightBumper())
     {
       climberOne.set(-1.00);
       climberTwo.set(-1.00);
     }
+    //stops the motors if nothing is being pressed
     else
     {
       climberOne.stopMotor();
