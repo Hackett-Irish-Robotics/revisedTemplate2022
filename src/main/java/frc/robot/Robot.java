@@ -7,23 +7,13 @@ package frc.robot;
 
 
 // these are the imports which allow us to use certain commands and classes
-import javax.management.BadBinaryOpValueExpException;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -43,14 +33,12 @@ public class Robot extends TimedRobot {
   XboxController xbox2;
   
   PWMVictorSPX shooter;
-  PWMVictorSPX belt;
-
-  PWMVictorSPX intakeMotor;
+  PWMVictorSPX belt_intake;
 
   PWMVictorSPX climberOne;
   PWMVictorSPX climberTwo;
 
-  // orientation
+  // orientation boolean, allows the orientation to be switched 
   boolean orientation = true;
 
 
@@ -72,13 +60,10 @@ public class Robot extends TimedRobot {
     // defines the shooter to the robot as a motor
     shooter = new PWMVictorSPX(Constants.ShooterMotor);
 
-    // defines the belt to the robot as a motor
-    belt = new PWMVictorSPX(Constants.beltMotor);
-        
-    // defines the intake motor to the robot as a motor
-    intakeMotor = new PWMVictorSPX(Constants.intakeMotor);
+    // defines the belt (and the intake) to the robot as a motor
+    belt_intake = new PWMVictorSPX(Constants.beltIntakeMotor);
 
-    // defines the climbing system to the robot as a motor
+    // defines the climbing systems to the robot as motors
     climberOne = new PWMVictorSPX(Constants.ClimberMotorOne);
     climberTwo = new PWMVictorSPX(Constants.ClimberMotorTwo);
 
@@ -95,7 +80,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
-    double speedCap = .25;
+    double speedCap = .75;
     double spinCap = .5;
 
     // this code is what allows the A and B buttons on the player 1 controller to switch the orientation of the robot (aka which way it thinks is its front) and allows it to drive
@@ -119,24 +104,6 @@ public class Robot extends TimedRobot {
        orientation = true;
     }
 
-    // commenting this out for now while testing if the belt and the intake can be on the same motor
-    /* 
-    // xbox controller 2 (player 1 controller) turns the intake on if X is pressed
-    if(xbox2.getXButton())
-    {
-      intakeMotor.set(-1.00);
-    }
-    // xbox controller 2 (player 1 controller) turns the intake backwards if Y is pressed
-    else if(xbox2.getYButton()) 
-    {
-      intakeMotor.set(1.00); 
-    }
-    // stops the motor if nothing is being pressed
-    else
-    {
-      intakeMotor.stopMotor();
-    }
-    */
 
     // xbox controller 1 (player 2 controller) B button shoots
     if (xbox1.getBButton())
@@ -154,20 +121,20 @@ public class Robot extends TimedRobot {
       shooter.stopMotor();
     }
 
-    // xbox controller 1 (player 2 controller) X button moves the belt down (and is currently working the intake)
+    // xbox controller 1 (player 2 controller) X button moves the belt down and reverses the intake
     if (xbox1.getXButton())
     {
-      belt.set(-0.25);  
-    }
-    // xbox controller 1 (player 2 controller) Y button moves the belt up (and is currently working the intake)
+      belt_intake.set(-0.75);  
+    }    
+    // xbox controller 1 (player 2 controller) Y button moves the belt up and intakes the ball
     else if(xbox1.getYButton())
     {
-      belt.set(1.00);
+      belt_intake.set(1.00);
     }
     // stops the motor if nothing is being pressed
     else
     {
-      belt.stopMotor();
+      belt_intake.stopMotor();
     }
     
     // xbox controller 1 (player 2 controller) deploys the climbers if the left bumper is pressed 
@@ -244,8 +211,7 @@ public class Robot extends TimedRobot {
       }
       // stops the motors
       shooter.stopMotor();
-      belt.stopMotor();
-      intakeMotor.stopMotor();
+      belt_intake.stopMotor();
       climberOne.stopMotor();
       climberTwo.stopMotor();
     }
