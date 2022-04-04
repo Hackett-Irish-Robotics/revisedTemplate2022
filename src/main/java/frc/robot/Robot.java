@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   XboxController xbox2;
   
   PWMVictorSPX shooter;
-  PWMVictorSPX belt_intake;
+  PWMVictorSPX beltIntake;
 
   PWMVictorSPX climberOne;
   PWMVictorSPX climberTwo;
@@ -58,10 +58,10 @@ public class Robot extends TimedRobot {
     backRight.setInverted(true);
     
     // defines the shooter to the robot as a motor
-    shooter = new PWMVictorSPX(Constants.ShooterMotor);
+    shooter = new PWMVictorSPX(Constants.AsigMotor);
 
     // defines the belt (and the intake) to the robot as a motor
-    belt_intake = new PWMVictorSPX(Constants.beltIntakeMotor);
+    beltIntake = new PWMVictorSPX(Constants.beltIntakeMotor);
 
     // defines the climbing systems to the robot as motors
     climberOne = new PWMVictorSPX(Constants.ClimberMotorOne);
@@ -124,17 +124,17 @@ public class Robot extends TimedRobot {
     // xbox controller 1 (player 2 controller) X button moves the belt down and reverses the intake
     if (xbox1.getXButton())
     {
-      belt_intake.set(-0.75);  
+      beltIntake.set(-0.75);  
     }    
     // xbox controller 1 (player 2 controller) Y button moves the belt up and intakes the ball
     else if(xbox1.getYButton())
     {
-      belt_intake.set(1.00);
+      beltIntake.set(1.00);
     }
     // stops the motor if nothing is being pressed
     else
     {
-      belt_intake.stopMotor();
+      beltIntake.stopMotor();
     }
     
     // xbox controller 1 (player 2 controller) deploys the climbers if the left bumper is pressed 
@@ -143,7 +143,7 @@ public class Robot extends TimedRobot {
       climberOne.set(1.00);
       climberTwo.set(1.00);
     }
-    // this reverses the climbers so we can bring them back down
+    // xbox controller 1 (player 2 controller) reverses the climbers so we can bring them back down if right bumper is pressed
     else if(xbox1.getRightBumper())
     {
       climberOne.set(-1.00);
@@ -168,20 +168,20 @@ public class Robot extends TimedRobot {
     timer.start();
 
     // declaring variables and arrays
-    double[] xSpeed = {0.4, 0, 0, 0};
-    double[] ySpeed = {0, 0, 0, 0};
-    double[] zSpeed = {0, 0, 0.1, 0};
-    double[] timeIntevals = {4, 0, 0, 0};
-    // double[] alecBaldwin = {0, 0, 0, 0};
+    double[] xSpeed = {0.4};
+    double[] ySpeed = {0};
+    double[] zSpeed = {0};
+    double[] timeIntevals = {4};
+    // double[] shooterTime = {0};
     double autonTime;
  
     // main for loop
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i < 1; i++){
       
       // sets the current time to autonTime
       autonTime = timer.get();
       
-      /*if(alecBaldwin[i] == 1){
+      /*if(shooterTime[i] == 1){
         
         shooterLeft.set(1);
         shooterRight.set(-1);
@@ -209,9 +209,9 @@ public class Robot extends TimedRobot {
         robotDrive.driveCartesian(xSpeed[i], ySpeed[i], zSpeed[i]);
   
       }
-      // stops the motors
+      // stops the moto rs
       shooter.stopMotor();
-      belt_intake.stopMotor();
+      beltIntake.stopMotor();
       climberOne.stopMotor();
       climberTwo.stopMotor();
     }

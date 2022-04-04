@@ -8,14 +8,14 @@ public class Constants {
     public static final int leftBackMotor = 3;
     public static final int rightBackMotor = 4;
 
+    // tells the program that there is a motor for the shooter connected to its respective victor (port on the RoboRio)
+    public static final int AsigMotor = 5;
+
     // tells the program that there is a motor for the belt and the intakeconnected to its respective victor (the ports on the RoboRio)
     public static final int beltIntakeMotor = 6;
 
-    // tells the program that there is a motor for the shooter connected to its respective victor (port on the RoboRio)
-    public static final int ShooterMotor = 7;
-
     // tells the program that there are motors for the climbers connected to their respective victors (ports on the RoboRio)
-    public static final int ClimberMotorOne = 5;
+    public static final int ClimberMotorOne = 7;
     public static final int ClimberMotorTwo = 8;
 
     // tells the program that there are two different xbox controllers connected
