@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     backRight.setInverted(true);
     
     // defines the shooter to the robot as a motor
-    shooter = new PWMVictorSPX(Constants.AsigMotor);
+    shooter = new PWMVictorSPX(Constants.shooterMotor);
 
     // defines the belt (and the intake) to the robot as a motor
     beltIntake = new PWMVictorSPX(Constants.beltIntakeMotor);

@@ -9,7 +9,7 @@ public class Constants {
     public static final int rightBackMotor = 4;
 
     // tells the program that there is a motor for the shooter connected to its respective victor (port on the RoboRio)
-    public static final int AsigMotor = 5;
+    public static final int shooterMotor = 5;
 
     // tells the program that there is a motor for the belt and the intakeconnected to its respective victor (the ports on the RoboRio)
     public static final int beltIntakeMotor = 6;
