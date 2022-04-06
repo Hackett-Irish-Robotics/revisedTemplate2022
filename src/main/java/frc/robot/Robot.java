@@ -25,8 +25,6 @@ public class Robot extends TimedRobot {
   
   Timer timer;
 
-
-
   MecanumDrive robotDrive;
 
   PWMVictorSPX frontLeft, frontRight, backLeft, backRight;
@@ -107,12 +105,12 @@ public class Robot extends TimedRobot {
     }
 
 
-    // xbox controller 1 (player 2 controller) B button shoots
+    // xbox controller 1 (player 2 controller) B button  reverses shooter
     if (xbox1.getBButton())
     {
        shooter.set(0.25);    
     }
-    // xbox controller 1 (player 2 controller) A button reverses shooter
+    // xbox controller 1 (player 2 controller) A button shoots
     else if(xbox1.getAButton())
     {
       shooter.set(-1.00);
