@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     robotDrive.setSafetyEnabled(false);
-    double speedCap = .75;
+    double speedCap = .75; //can change if you need to go faster or slower
     double spinCap = .5;
 
     // this code is what allows the A and B buttons on the player 1 controller to switch the orientation of the robot (aka which way it thinks is its front) and allows it to drive
@@ -105,15 +105,15 @@ public class Robot extends TimedRobot {
     }
 
 
-    // xbox controller 1 (player 2 controller) B button  reverses shooter
+    // xbox controller 1 (player 2 controller) B button reverses shooter
     if (xbox1.getBButton())
     {
-       shooter.set(0.25);    
+       shooter.set(0.75);    
     }
     // xbox controller 1 (player 2 controller) A button shoots
     else if(xbox1.getAButton())
     {
-      shooter.set(-1.00);
+      shooter.set(-0.85); //-1 is full speed, 0 is no speed
     }
     // stops the motor if nothing is being pressed
     else 
@@ -140,21 +140,21 @@ public class Robot extends TimedRobot {
     // xbox controller 1 (player 2 controller) deploys the climbers if the left bumper is pressed 
     if(xbox1.getLeftBumper())
     {
-      climberOne.set(1.00);
-      climberTwo.set(1.00);
+      climberOne.set(0.75);
+      climberTwo.set(0.75);
     }
     // xbox controller 1 (player 2 controller) reverses the climbers so we can bring them back down if right bumper is pressed
     else if(xbox1.getRightBumper())
     {
-      climberOne.set(-1.00);
-      climberTwo.set(-1.00);
+      climberOne.set(-1.0);
+      climberTwo.set(-1.0);
     }
     // stops the motors if nothing is being pressed
-    else
-    {
-      climberOne.stopMotor();
-      climberTwo.stopMotor();
-    }
+   // else
+    //{
+      //climberOne.stopMotor();
+      //climberTwo.stopMotor();
+    //}
 
   }
   // this is our autonomous code, which is when the robot is not being driven by humans
@@ -168,49 +168,46 @@ public class Robot extends TimedRobot {
     timer.start();
 
     // declaring variables and arrays
-    double[] xSpeed = {0.4};
-    double[] ySpeed = {0};
-    double[] zSpeed = {0};
-    double[] timeIntevals = {4};
-    // double[] shooterTime = {0};
+    double[] xSpeed = {0, 0, -0.3};
+    double[] ySpeed = {0, 0, 0};
+    double[] zSpeed = {0, 0, 0};
+    double[] timeIntevals = {7, 3, 2};
+    double[] shooterOn = {1, 1, 0};
+    double[] intakeOn = {0, 1, 0};
     double autonTime;
- 
+
     // main for loop
-    for(int i = 0; i < 1; i++){
+    for(int i = 0; i < 3; i++){
       
       // sets the current time to autonTime
       autonTime = timer.get();
-      
-      /*if(shooterTime[i] == 1){
-        
-        shooterLeft.set(1);
-        shooterRight.set(-1);
-        /*
-        while(timer.get() < autonTime + 0.5){
-          intake1.set(1.0);
-          intake2.set(1.0);
-        }
-
-        while(timer.get() < autonTime + 3){
-          intake1.set(-1.0);
-          intake2.set(-1.0);
-        }
-
-        shooterLeft.stopMotor();
-
-
-        shooterRight.stopMotor();
-      }*/
 
       // runs in between the time intervals
       while(timer.get() < autonTime + timeIntevals[i]){
 
+        //shooting
+        if(shooterOn[i] == 1){
+          shooter.set(-0.85);
+        }
+        else
+        {
+          shooter.stopMotor();
+        }
+
+        //shooting
+        if(intakeOn[i] == 1){
+          beltIntake.set(1.0);
+        }
+        else
+        {
+          beltIntake.stopMotor();
+        }
+
         // drives the robot
         robotDrive.driveCartesian(xSpeed[i], ySpeed[i], zSpeed[i]);
-  
+
       }
-      // stops the moto rs
-      shooter.stopMotor();
+      // stops the motors
       beltIntake.stopMotor();
       climberOne.stopMotor();
       climberTwo.stopMotor();
